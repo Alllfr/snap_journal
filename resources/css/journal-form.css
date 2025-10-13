@@ -1,10 +1,10 @@
+
 .journal-container {
     min-height: 100vh;
     padding: 2rem;
     background: #ffff;
     background-size: 600% 600%;
     animation: gradientMove 5s ease infinite;
-    margin-left: 26%;
 }
 
 @keyframes gradientMove {

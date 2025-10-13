@@ -1,6 +1,6 @@
 import { Head, useForm } from "@inertiajs/react";
-import { LoaderCircle } from "lucide-react";
-import React, { FormEventHandler } from "react";
+import { LoaderCircle, Eye, EyeOff, CheckCircle, XCircle } from "lucide-react";
+import React, { FormEventHandler, useState } from "react";
 import InputError from "@/components/input-error";
 
 type RegisterForm = {
@@ -10,6 +10,36 @@ type RegisterForm = {
     password_confirmation: string;
 };
 
+const validatePassword = (value: string) => {
+    const upper = /[A-Z]/.test(value);
+    const lower = /[a-z]/.test(value);
+    const symbol = /[^A-Za-z0-9]/.test(value);
+    const digits = (value.match(/[0-9]/g) || []).length >= 2;
+    const minLength = value.length >= 8;
+    if (!upper) return "Must contain at least one uppercase letter";
+    if (!lower) return "Must contain at least one lowercase letter";
+    if (!symbol) return "Must contain at least one symbol";
+    if (!digits) return "Must contain at least two digits";
+    if (!minLength) return "Minimum length is 8 characters";
+    return "";
+};
+
+const getPasswordRules = (value: string) => ({
+    upper: /[A-Z]/.test(value),
+    lower: /[a-z]/.test(value),
+    symbol: /[^A-Za-z0-9]/.test(value),
+    digits: (value.match(/[0-9]/g) || []).length >= 2,
+    minLength: value.length >= 8,
+});
+
+const ruleItem = (isValid: boolean): React.CSSProperties => ({
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    color: isValid ? "#16a34a" : "#888",
+    fontSize: "13px",
+});
+
 const Register: React.FC = () => {
     const { data, setData, post, processing, errors, reset } = useForm<Required<RegisterForm>>({
         name: "",
@@ -18,8 +48,24 @@ const Register: React.FC = () => {
         password_confirmation: "",
     });
 
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [passwordError, setPasswordError] = useState("");
+
+    const rules = getPasswordRules(data.password);
+
+    const handlePasswordChange = (value: string) => {
+        setData("password", value);
+        setPasswordError(validatePassword(value));
+    };
+
     const submit: FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault();
+        const err = validatePassword(data.password);
+        if (err) {
+            setPasswordError(err);
+            return;
+        }
         post(route("register"), {
             onFinish: () => reset("password", "password_confirmation"),
         });
@@ -29,7 +75,6 @@ const Register: React.FC = () => {
         <>
             <Head title="Create an account" />
             <div style={styles.page}>
-                {/* SVG Pastel Wave */}
                 <svg
                     style={styles.svg}
                     xmlns="http://www.w3.org/2000/svg"
@@ -91,33 +136,69 @@ const Register: React.FC = () => {
 
                         <div style={styles.fieldGroup}>
                             <label style={styles.label} htmlFor="password">Password</label>
-                            <input
-                                id="password"
-                                type="password"
-                                required
-                                autoComplete="new-password"
-                                value={data.password}
-                                onChange={(e) => setData("password", e.target.value)}
-                                placeholder="Password"
-                                style={styles.input}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.password} />
+                            <div style={styles.passwordWrapper}>
+                                <input
+                                    id="password"
+                                    type={showPassword ? "text" : "password"}
+                                    required
+                                    autoComplete="new-password"
+                                    value={data.password}
+                                    onChange={(e) => handlePasswordChange(e.target.value)}
+                                    placeholder="Password"
+                                    style={styles.input}
+                                    disabled={processing}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    style={styles.eyeButton}
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
+                            <InputError message={passwordError || errors.password} />
+
+                            <ul style={styles.rules}>
+                                <li style={ruleItem(rules.minLength)}>
+                                    {rules.minLength ? <CheckCircle size={16} color="#16a34a" /> : <XCircle size={16} color="#b3b3b3" />}<span>Minimum 8 characters</span>
+                                </li>
+                                <li style={ruleItem(rules.upper)}>
+                                    {rules.upper ? <CheckCircle size={16} color="#16a34a" /> : <XCircle size={16} color="#b3b3b3" />}<span>At least one uppercase letter</span>
+                                </li>
+                                <li style={ruleItem(rules.lower)}>
+                                    {rules.lower ? <CheckCircle size={16} color="#16a34a" /> : <XCircle size={16} color="#b3b3b3" />}<span>At least one lowercase letter</span>
+                                </li>
+                                <li style={ruleItem(rules.symbol)}>
+                                    {rules.symbol ? <CheckCircle size={16} color="#16a34a" /> : <XCircle size={16} color="#b3b3b3" />}<span>At least one symbol</span>
+                                </li>
+                                <li style={ruleItem(rules.digits)}>
+                                    {rules.digits ? <CheckCircle size={16} color="#16a34a" /> : <XCircle size={16} color="#b3b3b3" />}<span>At least two digits</span>
+                                </li>
+                            </ul>
                         </div>
 
                         <div style={styles.fieldGroup}>
                             <label style={styles.label} htmlFor="password_confirmation">Confirm password</label>
-                            <input
-                                id="password_confirmation"
-                                type="password"
-                                required
-                                autoComplete="new-password"
-                                value={data.password_confirmation}
-                                onChange={(e) => setData("password_confirmation", e.target.value)}
-                                placeholder="Confirm password"
-                                style={styles.input}
-                                disabled={processing}
-                            />
+                            <div style={styles.passwordWrapper}>
+                                <input
+                                    id="password_confirmation"
+                                    type={showConfirm ? "text" : "password"}
+                                    required
+                                    autoComplete="new-password"
+                                    value={data.password_confirmation}
+                                    onChange={(e) => setData("password_confirmation", e.target.value)}
+                                    placeholder="Confirm password"
+                                    style={styles.input}
+                                    disabled={processing}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowConfirm(!showConfirm)}
+                                    style={styles.eyeButton}
+                                >
+                                    {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
                             <InputError message={errors.password_confirmation} />
                         </div>
 
@@ -162,7 +243,6 @@ const styles: Record<string, React.CSSProperties> = {
         padding: "32px",
         maxWidth: "420px",
         width: "100%",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
     },
     title: {
         fontSize: "24px",
@@ -197,6 +277,33 @@ const styles: Record<string, React.CSSProperties> = {
         outline: "none",
         fontSize: "14px",
         transition: "border-color 0.2s ease",
+        width: "100%",
+    },
+    passwordWrapper: {
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+    },
+    eyeButton: {
+        position: "absolute",
+        right: "10px",
+        background: "transparent",
+        border: "none",
+        cursor: "pointer",
+        padding: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    rules: {
+        listStyle: "none",
+        padding: 0,
+        marginTop: "8px",
+        fontSize: "13px",
+        lineHeight: "1.6",
+        display: "flex",
+        flexDirection: "column",
+        gap: "8px",
     },
     button: {
         background: "linear-gradient(90deg, #ffd6e0, #cce7ff)",

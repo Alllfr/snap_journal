@@ -1,6 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
-import { LoaderCircle } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { LoaderCircle, Eye, EyeOff } from 'lucide-react';
+import { FormEventHandler, useState } from 'react';
 import InputError from '@/components/input-error';
 
 interface LoginProps {
@@ -14,6 +14,8 @@ export default function Login({ status, canResetPassword }: LoginProps) {
         password: '',
         remember: false,
     });
+
+    const [showPassword, setShowPassword] = useState(false); 
 
     const submit: FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault();
@@ -52,6 +54,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     </p>
 
                     <form style={styles.form} onSubmit={submit}>
+                        {/* Email */}
                         <div style={styles.fieldGroup}>
                             <label style={styles.label} htmlFor="email">Email address</label>
                             <input
@@ -77,16 +80,28 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     </a>
                                 )}
                             </div>
-                            <input
-                                id="password"
-                                type="password"
-                                required
-                                autoComplete="current-password"
-                                value={data.password}
-                                onChange={(e) => setData('password', e.target.value)}
-                                placeholder="Password"
-                                style={styles.input}
-                            />
+
+                            <div style={styles.passwordWrapper}>
+                                <input
+                                    id="password"
+                                    type={showPassword ? 'text' : 'password'}
+                                    required
+                                    autoComplete="current-password"
+                                    value={data.password}
+                                    onChange={(e) => setData('password', e.target.value)}
+                                    placeholder="Password"
+                                    style={styles.input}
+                                />
+
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    style={styles.eyeButton}
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
+
                             <InputError message={errors.password} />
                         </div>
 
@@ -173,20 +188,23 @@ const styles: { [key: string]: React.CSSProperties } = {
         outline: 'none',
         fontSize: '14px',
         transition: 'border-color 0.2s ease',
+        width: '100%',
     },
-    checkboxRow: {
+    passwordWrapper: {
+        position: 'relative', 
         display: 'flex',
         alignItems: 'center',
-        gap: 'px',
-        cursor: 'pointer',
-        marginTop: '-4px',
     },
-    checkbox: {
+    eyeButton: {
+        position: 'absolute', 
+        right: '10px',
+        background: 'transparent',
+        border: 'none',
         cursor: 'pointer',
-        margin: 0,
-    },
-    checkboxLabel: {
-        fontSize: '14px',
+        padding: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     button: {
         background: 'linear-gradient(90deg, #ffd6e0, #cce7ff)',

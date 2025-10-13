@@ -35,4 +35,16 @@ return [
         ],
     ],
 
+   'firebase' => [
+    'credentials' => [
+        'file' => env('GOOGLE_APPLICATION_CREDENTIALS'),
+    ],
+],
+
+'fastapi' => [
+    'url' => env('FASTAPI_URL', 'http://127.0.0.1:5001'),
+    'key' => env('API_KEY'),
+],
+
+
 ];

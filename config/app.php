@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+   'timezone' => 'Asia/Jakarta',
 
     /*
     |--------------------------------------------------------------------------
@@ -83,6 +83,9 @@ return [
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
     'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
+    
+    'frontend_url' => env('FRONTEND_URL', 'http://localhost:3000'),
+
 
     /*
     |--------------------------------------------------------------------------
@@ -122,5 +125,10 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+'fastapi' => [
+    'url' => env('FASTAPI_URL', 'http://127.0.0.1:5001'),
+    'key' => env('API_KEY'),
+],
+
 
 ];

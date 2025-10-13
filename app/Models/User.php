@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Journal;
+use App\Notifications\ResetPasswordNotification;
+
+
 
 
 class User extends Authenticatable
@@ -20,10 +23,13 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    'name',
+    'email',
+    'password',
+    'last_entry_at',
+    'last_reminder_at',
+    'fcm_token',
+];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -52,5 +58,11 @@ class User extends Authenticatable
 {
     return $this->hasMany(Journal::class);
 }
+ 
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
 
-}
+ }
+

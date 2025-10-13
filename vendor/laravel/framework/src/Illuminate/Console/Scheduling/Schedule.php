@@ -18,6 +18,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\ProcessUtils;
 use Illuminate\Support\Traits\Macroable;
 use RuntimeException;
+use Symfony\Component\Console\Command\Command as SymfonyCommand;
 
 use function Illuminate\Support\enum_value;
 
@@ -149,12 +150,22 @@ class Schedule
     /**
      * Add a new Artisan command event to the schedule.
      *
-     * @param  string  $command
+     * @param  \Symfony\Component\Console\Command\Command|string  $command
      * @param  array  $parameters
      * @return \Illuminate\Console\Scheduling\Event
      */
     public function command($command, array $parameters = [])
     {
+        if ($command instanceof SymfonyCommand) {
+            $command = get_class($command);
+
+            $command = Container::getInstance()->make($command);
+
+            return $this->exec(
+                Application::formatCommandString($command->getName()), $parameters,
+            )->description($command->getDescription());
+        }
+
         if (class_exists($command)) {
             $command = Container::getInstance()->make($command);
 
@@ -302,6 +313,7 @@ class Schedule
         }
 
         $this->groupStack[] = $this->attributes;
+        $this->attributes = null;
 
         $events($this);
 
@@ -316,16 +328,16 @@ class Schedule
      */
     protected function mergePendingAttributes(Event $event)
     {
+        if (! empty($this->groupStack)) {
+            $group = array_last($this->groupStack);
+
+            $group->mergeAttributes($event);
+        }
+
         if (isset($this->attributes)) {
             $this->attributes->mergeAttributes($event);
 
             $this->attributes = null;
-        }
-
-        if (! empty($this->groupStack)) {
-            $group = end($this->groupStack);
-
-            $group->mergeAttributes($event);
         }
     }
 
@@ -465,7 +477,7 @@ class Schedule
         }
 
         if (method_exists(PendingEventAttributes::class, $method)) {
-            $this->attributes ??= end($this->groupStack) ?: new PendingEventAttributes($this);
+            $this->attributes ??= $this->groupStack ? clone array_last($this->groupStack) : new PendingEventAttributes($this);
 
             return $this->attributes->$method(...$parameters);
         }

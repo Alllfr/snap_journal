@@ -1,6 +1,7 @@
 import '../css/app.css';
 import '../css/journal.css';
 import '../css/journal-form.css';
+import './i18n/i18n';
 
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';

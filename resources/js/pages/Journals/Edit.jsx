@@ -1,40 +1,47 @@
-import React, { useState } from "react"
-import { Head, Link, useForm } from "@inertiajs/react"
-import { CKEditor } from "@ckeditor/ckeditor5-react"
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic"
-import "../../../css/journal-edit.css"
-import { FaPaperPlane } from "react-icons/fa"
+import React, { useState } from "react";
+import { Head, Link, useForm } from "@inertiajs/react";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import "../../../css/journal-edit.css";
+import { FaPaperPlane } from "react-icons/fa";
 
 export default function Edit({ journal, auth }) {
+  const csrfToken =
+    document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "";
+
   const { data, setData, put, processing, errors } = useForm({
     title: journal.title || "",
     note: journal.note || "",
-  })
+  });
 
-  const [isEnhancing, setIsEnhancing] = useState(false)
-  const [isEnhanced, setIsEnhanced] = useState(false)
-  const [chatOpen, setChatOpen] = useState(false)
-  const [chatHistory, setChatHistory] = useState([])
-  const [isChatting, setIsChatting] = useState(false)
+  const [isEnhancing, setIsEnhancing] = useState(false);
+  const [isEnhanced, setIsEnhanced] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatHistory, setChatHistory] = useState([]);
+  const [isChatting, setIsChatting] = useState(false);
 
-  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || ""
+  const rawTags = journal.tags?.tags ?? journal.tags ?? [];
+  const tagList = Array.isArray(rawTags)
+    ? rawTags.map((t) => (typeof t === "string" ? t : t?.name ?? t?.tag ?? t?.tags ?? ""))
+    : [];
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    put(`/journals/${journal.id}`, { preserveScroll: true })
-  }
+    e.preventDefault();
+    put(`/journals/${journal.id}`, { preserveScroll: true });
+  };
 
   const stripHTML = (html) => {
-    const div = document.createElement("div")
-    div.innerHTML = html
-    return div.textContent || div.innerText || ""
-  }
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent || div.innerText || "";
+  };
 
   const handleEnhance = async () => {
-    if (isEnhancing) return
-    setIsEnhancing(true)
+    if (isEnhancing) return;
+
+    setIsEnhancing(true);
     try {
-      const saveRes = await fetch(`/journals/${journal.id}`, {
+      await fetch(`/journals/${journal.id}`, {
         method: "POST",
         headers: {
           "X-CSRF-TOKEN": csrfToken,
@@ -42,127 +49,175 @@ export default function Edit({ journal, auth }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-        credentials: "same-origin",
-      })
-      if (!saveRes.ok) throw new Error("Save failed")
+      });
 
-      const enhanceRes = await fetch(`/journals/${journal.id}/enhance`, {
-        method: "POST",
-        headers: { "X-CSRF-TOKEN": csrfToken, Accept: "application/json" },
-        credentials: "same-origin",
-      })
-      const json = await enhanceRes.json().catch(() => ({}))
-      const highlight = json.highlight || "-"
-      const elaborated = stripHTML(json.elaborated_text || "-")
-      if (elaborated && elaborated !== "-") setData("note", elaborated)
-      setChatHistory([
-        {
-          role: "assistant",
-          content: `🌟 Highlight: ${highlight}\n💬 ${elaborated}`,
-        },
-      ])
-      setIsEnhanced(true)
-      setTimeout(() => setChatOpen(true), 250)
-    } catch (err) {
-      console.error(err)
-    } finally {
-      setIsEnhancing(false)
-    }
-  }
-
-  const handleChatSend = async (message) => {
-    if (!message.trim() || isChatting) return
-    const newHistory = [...chatHistory, { role: "user", content: message }]
-    setChatHistory(newHistory)
-    setIsChatting(true)
-    try {
-      const res = await fetch(`/journals/${journal.id}/chat-ask`, {
+      const res = await fetch(`/journals/${journal.id}/enhance`, {
         method: "POST",
         headers: {
+          "X-CSRF-TOKEN": csrfToken,
+          Accept: "application/json",
+        },
+      });
+
+        const json = await res.json();
+        const summary = json.summary || "";
+        const highlight = json.highlight || "";
+        const suggestion = json.suggestion || "";
+
+        const firstMessage = `
+        Highlight:
+        ${highlight || "-"}
+
+        The first question!
+        ${suggestion || "-"}
+        `;
+
+        setChatHistory([
+          { role: "assistant", content: firstMessage }
+        ]);
+
+        setIsEnhanced(true);
+        setTimeout(() => setChatOpen(true), 250);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsEnhancing(false);
+      }
+    };
+
+    const handleChatSend = async (message) => {
+      if (!message.trim() || isChatting) return;
+
+      const updated = [...chatHistory, { role: "user", content: message }];
+      setChatHistory(updated);
+      setIsChatting(true);
+
+      try {
+        const res = await fetch(`/journals/${journal.id}/chat-ask`, {
+          method: "POST",
+          headers: {
           "X-CSRF-TOKEN": csrfToken,
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        credentials: "same-origin",
-        body: JSON.stringify({
-          user_input: message,
-          chat_history: newHistory,
-        }),
-      })
-      const data = await res.json().catch(() => ({}))
-      const reply =
-        data.assistant_response ||
-        data.response ||
-        data.message ||
-        data.answer ||
-        data.text ||
-        null
-      if (reply) {
-        setChatHistory((prev) => [...prev, { role: "assistant", content: reply }])
+        body: JSON.stringify({ user_input: message, chat_history: updated }),
+      });
+
+      const json = await res.json();
+
+      let reply =
+        json.assistant_response ||
+        json.response ||
+        json.message ||
+        json.answer ||
+        json.text ||
+        "…";
+
+      if (typeof reply !== "string") {
+        if (reply && typeof reply === "object") {
+          reply = reply.assistant_response || JSON.stringify(reply, null, 2);
+        } else {
+          reply = String(reply);
+        }
       }
-    } catch (err) {
-      console.error(err)
+
+      const formattedReply = reply.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+
+      setChatHistory((prev) => [...prev, { role: "assistant", content: formattedReply }]);
+    } catch (e) {
+      console.error(e);
+      setChatHistory((prev) => [
+        ...prev,
+        { role: "assistant", content: "Error: gagal terhubung ke AI." },
+      ]);
     } finally {
-      setIsChatting(false)
+      setIsChatting(false);
     }
-  }
+  };
 
   const customUploadAdapter = (loader) => ({
     upload: () =>
       loader.file.then((file) => {
-        const formData = new FormData()
-        formData.append("upload", file)
-        return fetch("/journals/upload", {
+        const formData = new FormData();
+        formData.append("upload", file);
+
+        return fetch("/journals/upload-photo", {
           method: "POST",
           body: formData,
           headers: {
-            "X-CSRF-TOKEN": csrfToken,
             "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-TOKEN": csrfToken,
           },
           credentials: "same-origin",
         })
-          .then((res) => {
-            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
-            return res.json()
-          })
-          .then((res) => ({ default: res.url }))
+          .then((res) => res.json())
+          .then((res) => ({ default: res.url }));
       }),
-  })
+  });
 
   function uploadPlugin(editor) {
     editor.plugins.get("FileRepository").createUploadAdapter = (loader) =>
-      customUploadAdapter(loader)
+      customUploadAdapter(loader);
   }
 
   return (
     <div className={`split-wrapper ${chatOpen ? "split-active" : ""}`}>
       <Head title="Edit Journal" />
+
       <div className="left-pane">
-        <div className="journal-edit-card" style={{ transform: chatOpen ? "translateX(200px)" : "none" }}>
+        <div className="journal-edit-card">
           <div className="center-header">
-            <h1 className="journal-edit-title">{data.title}</h1>
-            {journal.tags && (
-              <div className="journal-tags">
-                {journal.tags.split(",").map((t, i) => (
-                  <span key={i} className="tag-chip">{t.trim()}</span>
-                ))}
+            <h1 className="journal-edit-title">Edit Journal</h1>
+
+            <div className="journal-tags">
+              {tagList.map((tag, i) => (
+                <div key={i} className="tag-chip">
+                  {tag}
+                </div>
+              ))}
+            </div>
+
+            <div className="media-grid">
+              <div className="media-row">
+                {journal.video_url && (
+                  <video src={journal.video_url} controls className="video-box" />
+                )}
+                {journal.expression && (
+                  <div className="expression-box">
+                    <strong>Your Expression:</strong> {journal.expression} (
+                    {(journal.similarity * 100).toFixed(2)}%)
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-          <div className="illustrator-row">
-            <div className="illustrator-box">
-              {journal.illustrator_urls && journal.illustrator_urls.length > 0 ? (
-                <img src={journal.illustrator_urls[0]} alt="Illustration" />
-              ) : (
-                <div className="illustration-placeholder">No illustration</div>
-              )}
+
+              <div className="media-row">
+                {journal.illustrator_urls && (
+                  <img
+                    src={journal.illustrator_urls}
+                    className="illustrator-box"
+                    alt="Journal Illustration"
+                  />
+                )}
+                {journal.emotion && (
+                  <div className="emotion-box wide">
+                    <strong>Detected Emotion:</strong> {journal.emotion} (
+                    {(journal.confidence * 100).toFixed(2)}%)
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="emotion-box">
-              <p>Detected Emotion: <strong>{journal.emotion || "Neutral"}</strong></p>
-              <p>Similarity: <strong>{journal.confidence ? `${journal.confidence}%` : "0%"}</strong></p>
-            </div>
           </div>
-          <form onSubmit={handleSubmit} className="journal-edit-form">
+
+          <div className="journal-edit-form">
+            <label>Title</label>
+            <input
+              type="text"
+              value={data.title}
+              onChange={(e) => setData("title", e.target.value)}
+              required
+            />
+            {errors.title && <p className="error-text">{errors.title}</p>}
+
             <label>Note</label>
             <CKEditor
               editor={ClassicEditor}
@@ -171,54 +226,71 @@ export default function Edit({ journal, auth }) {
               config={{ extraPlugins: [uploadPlugin] }}
             />
             {errors.note && <p className="error-text">{errors.note}</p>}
+
             <div className="journal-edit-actions">
-              <Link href="/journals" className="btn-red" style={{ minWidth: 120, marginTop: 0 }}>
+              <Link href="/journals" className="btn-red">
                 Cancel
               </Link>
+
               <button
                 type="button"
                 onClick={handleEnhance}
                 disabled={isEnhancing}
                 className="journal-edit-btn-pink"
-                style={{ minWidth: 140 }}
               >
-                {isEnhancing ? "Enhancing..." : isEnhanced ? "Enhance again" : "Save & Enhance"}
+                {isEnhancing
+                  ? "Enhancing..."
+                  : isEnhanced
+                  ? "Enhance Again"
+                  : "Save & Enhance"}
               </button>
-              <button type="submit" disabled={processing} className="btn-green" style={{ minWidth: 140 }}>
+
+              <button type="submit" onClick={handleSubmit} className="btn-green">
                 {processing ? "Saving..." : "Save Journal"}
               </button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
+
       <div className="right-pane">
-        <div className="chat-room" style={{ transform: chatOpen ? "translateX(-100px)" : "none" }}>
+        <div className="chat-room">
           <div className="chat-header">
             <span>AI Assistant</span>
-            <button className="chat-close" onClick={() => setChatOpen(false)}>✕</button>
+            <button className="chat-close" onClick={() => setChatOpen(false)}>
+              ✕
+            </button>
           </div>
+
           <div className="chat-body">
             {chatHistory.length === 0 ? (
               <div className="chat-placeholder">AI is ready to help 💬</div>
             ) : (
               chatHistory.map((msg, i) => (
-                <div key={i} className={`chat-bubble ${msg.role === "user" ? "user-bubble" : "ai-bubble"}`}>
-                  <strong>{msg.role === "user" ? `${auth?.user?.name || "You"}:` : "AI:"}</strong>{" "}
+                <div
+                  key={i}
+                  className={`chat-bubble ${
+                    msg.role === "user" ? "user-bubble" : "ai-bubble"
+                  }`}
+                  style={{ whiteSpace: "pre-line" }}
+                >
+                  <strong>{msg.role === "user" ? `${auth?.user?.name || "You"}: ` : "AI: "}</strong>
                   {msg.content}
                 </div>
               ))
             )}
           </div>
+
           <div className="chat-input">
             <input
               type="text"
               id="chatMessage"
-              placeholder={isChatting ? "AI is thinking..." : "Type message..."}
               disabled={isChatting}
+              placeholder={isChatting ? "AI is thinking..." : "Type message..."}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && e.target.value.trim() && !isChatting) {
-                  handleChatSend(e.target.value.trim())
-                  e.target.value = ""
+                if (e.key === "Enter" && !isChatting && e.target.value.trim()) {
+                  handleChatSend(e.target.value);
+                  e.target.value = "";
                 }
               }}
             />
@@ -226,10 +298,10 @@ export default function Edit({ journal, auth }) {
               className="send-btn"
               disabled={isChatting}
               onClick={() => {
-                const input = document.getElementById("chatMessage")
+                const input = document.getElementById("chatMessage");
                 if (input.value.trim()) {
-                  handleChatSend(input.value.trim())
-                  input.value = ""
+                  handleChatSend(input.value);
+                  input.value = "";
                 }
               }}
             >
@@ -239,5 +311,5 @@ export default function Edit({ journal, auth }) {
         </div>
       </div>
     </div>
-  )
+  );
 }

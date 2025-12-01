@@ -78,6 +78,7 @@ return array(
     'League\\Uri\\' => array($vendorDir . '/league/uri', $vendorDir . '/league/uri-interfaces'),
     'League\\MimeTypeDetection\\' => array($vendorDir . '/league/mime-type-detection/src'),
     'League\\Flysystem\\Local\\' => array($vendorDir . '/league/flysystem-local'),
+    'League\\Flysystem\\GoogleCloudStorage\\' => array($vendorDir . '/league/flysystem-google-cloud-storage'),
     'League\\Flysystem\\' => array($vendorDir . '/league/flysystem/src'),
     'League\\Config\\' => array($vendorDir . '/league/config/src'),
     'League\\CommonMark\\' => array($vendorDir . '/league/commonmark/src'),

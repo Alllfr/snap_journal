@@ -14,25 +14,25 @@ use App\Notifications\InactiveUserNotification;
 class CheckInactiveUsers extends Command
 {
     protected $signature = 'reminder:inactive-users';
-    protected $description = 'Send FCM reminders to users who have not written a journal in 48 hours (and save to DB)';
+    protected $description = 'Send FCM reminders to users who have not written a journal in 10 minutes (and save to DB)';
 
     public function handle()
     {
-        $now = Carbon::now();
-
         $users = User::whereNotNull('fcm_token')
-            ->whereNotNull('last_entry_at')
-            ->where(function ($q) use ($now) {
-                $q->where('last_entry_at', '<=', $now->copy()->subMinutes(1))
-                  ->where(function ($query) {
-                      $query->whereNull('last_reminder_at')
-                            ->orWhereColumn('last_reminder_at', '<', 'last_entry_at');
-                  });
-            })
+         ->where(function($q) {
+    $q->whereNull('last_entry')  // user belum pernah menulis
+      ->orWhere('last_entry', '<=', now()->subMinutes(5));
+})
+->where(function ($query) {
+    $query->whereNull('last_reminder_at')
+          ->orWhereColumn('last_reminder_at', '<', 'last_entry');
+})
+
+
             ->get();
 
         if ($users->isEmpty()) {
-            Log::info('No users need reminders at ' . $now);
+            Log::info('No users need reminders at ' . now());
             $this->info('No users need reminders right now.');
             return;
         }
@@ -46,7 +46,7 @@ class CheckInactiveUsers extends Command
                     ->withNotification(
                         FirebaseNotification::create(
                             'We want to hear your story again :(',
-                            'Hey ' . $user->name . ', it’s been 48 hours since your last journal. Want to add a new one?'
+                            'Hey ' . $user->name . ', it’s been 10 minutes since your last journal. Want to add a new one?'
                         )
                     )
                     ->withData(['type' => 'reminder']);

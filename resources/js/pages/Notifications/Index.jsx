@@ -1,22 +1,17 @@
 import React from "react"
-import { Head, router } from "@inertiajs/react"
+import { Head, Link, router } from "@inertiajs/react"
+import { FaHome } from "react-icons/fa"
 
 export default function Index({ notifications }) {
   const allRead = notifications.every((n) => n.read_at)
 
   const handleMarkAsRead = () => {
-    router.post(route("notifications.markAsRead"), {}, {
-      preserveScroll: true,
-      onSuccess: () => console.log("Notifications marked as read"),
-    })
+    router.post(route("notifications.markAsRead"), {}, { preserveScroll: true })
   }
 
   const handleDelete = (id) => {
     if (confirm("Delete this notification?")) {
-      router.delete(route("notifications.destroy", id), {
-        preserveScroll: true,
-        onSuccess: () => console.log("Notification deleted"),
-      })
+      router.delete(route("notifications.destroy", id), { preserveScroll: true })
     }
   }
 
@@ -27,11 +22,18 @@ export default function Index({ notifications }) {
       <div className="notification-card">
         <div className="header-row">
           <h1 className="notification-title">Notification History</h1>
-          {notifications.length > 0 && (
-            <button onClick={handleMarkAsRead} className="btn-pinkk">
-              {allRead ? "All read ✓" : "Mark all as read"}
-            </button>
-          )}
+
+          <div className="header-actions">
+            <Link href="/journals" className="home-btn">
+              <FaHome className="home-icon" />
+            </Link>
+
+            {notifications.length > 0 && (
+              <button onClick={handleMarkAsRead} className="btn-pinkk">
+                {allRead ? "All read ✓" : "Mark all as read"}
+              </button>
+            )}
+          </div>
         </div>
 
         {notifications.length === 0 ? (
@@ -39,19 +41,14 @@ export default function Index({ notifications }) {
         ) : (
           <div className="notification-list">
             {notifications.map((n) => (
-              <div
-                key={n.id}
-                className={`notification-item ${n.read_at ? "read" : "unread"}`}
-              >
+              <div key={n.id} className={`notification-item ${n.read_at ? "read" : "unread"}`}>
                 <div className="notif-header">
                   <h2 className="notif-title">{n.title}</h2>
-                  <button
-                    onClick={() => handleDelete(n.id)}
-                    className="btn-red"
-                  >
+                  <button onClick={() => handleDelete(n.id)} className="btn">
                     Delete
                   </button>
                 </div>
+
                 <p className="notif-message">{n.message}</p>
                 <small className="notif-date">{n.created_at}</small>
               </div>
@@ -92,21 +89,42 @@ export default function Index({ notifications }) {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 1.5rem;
           flex-wrap: wrap;
-          gap: 0.5rem;
+          gap: 0.75rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .header-actions {
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+        }
+
+        .home-btn {
+          padding: 0.45rem 0.55rem;
+          border-radius: 8px;
+          background: linear-gradient(135deg, #a8edea, #fed6e3);
+          box-shadow: 0 0 10px rgba(255,182,193,0.4);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          transition: transform 0.2s ease;
+        }
+
+        .home-btn:hover {
+          transform: translateY(-2px);
+        }
+
+        .home-icon {
+          width: 22px;
+          height: 22px;
+          fill: #f3a6c6ff;
         }
 
         .notification-title {
           font-size: 2.3rem;
           font-weight: 700;
           color: #333;
-          animation: fadeSlideIn 1.2s ease forwards;
-        }
-
-        @keyframes fadeSlideIn {
-          0% { opacity: 0; transform: translateY(10px) scale(0.95); }
-          100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .notification-list {
@@ -129,7 +147,7 @@ export default function Index({ notifications }) {
 
         .notification-item.read {
           background: #f9f9f9;
-          opacity: 0.8;
+          opacity: 0.85;
         }
 
         .notif-header {
@@ -142,8 +160,8 @@ export default function Index({ notifications }) {
         .notif-title {
           font-weight: 600;
           font-size: 1.1rem;
-          color: #333;
           margin: 0;
+          color: #333;
         }
 
         .notif-message {
@@ -159,29 +177,27 @@ export default function Index({ notifications }) {
         .no-notif-text {
           text-align: center;
           color: #777;
-          font-size: 1rem;
           margin-top: 2rem;
         }
 
-        .btn-pinkk{
+        .btn-pinkk {
           background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
           color: #333;
-          padding: 0.3rem 0.75rem;
+          padding: 0.35rem 0.85rem;
           font-size: 0.8rem;
           border-radius: 6px;
           font-weight: 600;
           border: none;
           cursor: pointer;
-          transition: all 0.3s ease;
-          display: inline-block;
-          width: auto;
+          transition: 0.3s ease;
         }
-        .btn-pinkk:hover{
+
+        .btn-pinkk:hover {
           background: linear-gradient(135deg, #a8edea, #fed6e3);
           transform: translateY(-1px);
         }
 
-        .btn-red {
+        .btn {
           background: linear-gradient(135deg, #ff9a9e, #fecfef);
           color: #333;
           padding: 0.25rem 0.6rem;
@@ -190,9 +206,10 @@ export default function Index({ notifications }) {
           font-weight: 600;
           border: none;
           cursor: pointer;
-          transition: all 0.3s ease;
+          transition: 0.3s ease;
         }
-        .btn-red:hover {
+
+        .btn:hover {
           background: linear-gradient(135deg, #ff758c, #ff7eb3);
           transform: translateY(-1px);
         }

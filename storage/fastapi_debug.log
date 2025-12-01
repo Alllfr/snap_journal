@@ -1,0 +1,30 @@
+2025-11-25 00:55:41 {
+    "video_url": "https:\/\/storage.googleapis.com\/journal-ai-btj\/https:\/\/storage.googleapis.com\/journal-ai-btj\/users\/309c026e-cb5e-41db-ad4a-18860cbb71b4\/journals\/897763e7-eafa-4785-99c6-c3f98dc561ba\/videos\/69249c0c29c55.mp4",
+    "video_result": [],
+    "classify_result": {
+        "emotion_classification": {
+            "emotion": "a feeling of joy and happiness",
+            "similarity": 0.7385180669346996
+        },
+        "emotion_tags": [
+            {
+                "tags": "Work & Career",
+                "similarity": 0.7837573767296893
+            },
+            {
+                "tags": "Challenges & Obstacles",
+                "similarity": 0.7589828602160203
+            },
+            {
+                "tags": "Romance & Love",
+                "similarity": 0.7484912954549319
+            }
+        ],
+        "latency_ms": 259
+    },
+    "tags": [],
+    "confidence": null,
+    "expression": null,
+    "emotion": null
+}
+

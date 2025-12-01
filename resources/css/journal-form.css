@@ -1,39 +1,32 @@
-
 .journal-container {
-    min-height: 100vh;
+    min-height: 50vh;
     padding: 2rem;
-    background: #ffff;
-    background-size: 600% 600%;
-    animation: gradientMove 5s ease infinite;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
-
-@keyframes gradientMove {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
 
 .journal-card {
+    width: 100%;
+    max-width: 600px;
     background: white;
-    border: 2px dashed rgba(255, 153, 153, 0.6);
+    border: 2px dashed #ff99cc;
     border-radius: 15px;
     padding: 2rem;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .journal-title {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 700;
     text-align: center;
-    margin-bottom: 1.5rem;
-    color: #333;
+    margin-bottom: 1rem;
+    color: #e08cb5;
     overflow: hidden;
     white-space: nowrap;
     opacity: 0;
     animation: fadeSlideIn 1.2s ease forwards;
-    text-align: center;
-    margin-bottom: 1rem;
 }
 
 @keyframes fadeSlideIn {
@@ -54,7 +47,7 @@
 
 .journal-form input[type="text"],
 .journal-form textarea {
-    border: 2px dashed rgba(255, 240, 27, 0.6);
+    border: 2px dashed #ffeb3b;
     border-radius: 8px;
     padding: 0.5rem 0.75rem;
     font-size: 1rem;
@@ -82,18 +75,24 @@
     margin-bottom: 1rem;
 }
 
-.btn-pink {
-    background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
-    color: #333;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-weight: bold;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    display: inline-block;
+.btn-pink, .btn-red {
+    flex: 1;
+    padding: 0.8rem 1.2rem;
+    border: none;
+    border-radius: 30px;
+    font-weight: 750;
+    font-size: 0.85rem;
+    cursor: pointer;
     text-align: center;
-    margin-top: 1rem;
+    transition: all 0.3s ease;
+    min-width: 115px;
 }
+
+.btn-pink {
+    background: linear-gradient(90deg, #ff99cc, #66ccff);
+    color: #222;
+}
+
 .btn-pink:hover {
     background: linear-gradient(135deg, #a8edea, #fed6e3);
     transform: translateY(-2px);
@@ -102,20 +101,47 @@
 .btn-red {
     background: linear-gradient(135deg, #ff9a9e, #fecfef);
     color: #333;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
     font-weight: bold;
     text-decoration: none;
-    transition: all 0.3s ease;
     display: inline-block;
-    text-align: center;
-    margin-top: 1rem;
 }
+
 .btn-red:hover {
     background: linear-gradient(135deg, #ff758c, #ff7eb3);
     transform: translateY(-2px);
 }
 
 .flex.justify-between.mt-4 {
+    gap: 1rem;
+}
+
+.error-text {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar-fill {
+    height: 8px;
+    background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.button-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
     gap: 1rem;
 }

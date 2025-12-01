@@ -3,25 +3,29 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class FCMTokenController extends Controller
 {
     public function store(Request $request)
     {
-        $user = Auth::user();
-
-        if (!$user) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-
         $request->validate([
+            'user_id' => 'required',
             'token' => 'required|string',
         ]);
+
+        $user = User::find($request->user_id);
+
+        if (!$user) {
+            return response()->json(['message' => 'User tidak ditemukan'], 404);
+        }
 
         $user->fcm_token = $request->token;
         $user->save();
 
-        return response()->json(['message' => 'FCM token saved successfully']);
+        return response()->json([
+            'message' => 'FCM token berhasil disimpan',
+            'user_id' => $user->id
+        ]);
     }
 }

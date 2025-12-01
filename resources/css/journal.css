@@ -39,12 +39,13 @@ video {
   border-bottom: 4px solid;
   border-image: linear-gradient(90deg, #ff99cc, #66ccff);
   border-image-slice: 1;
+  background: #fff;
 }
 
 .dashboard-title {
   font-size: 1.8rem;
   font-weight: bold;
-  background: linear-gradient(90deg, #ff66b2, #6699ff);
+  background: linear-gradient(90deg, #ff99cc, #66ccff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -52,6 +53,8 @@ video {
 .nav-buttons {
   display: flex;
   gap: 0.75rem;
+  align-items: center;
+  position: relative;
 }
 
 .emotion-image {
@@ -73,11 +76,11 @@ video {
   background: white;
   border-radius: 30px;
   border: 2px solid transparent;
-  background-image: linear-gradient(white, white),
-    linear-gradient(90deg, #ff99cc, #66ccff);
+  background-image: linear-gradient(white, white), linear-gradient(90deg, #ff99cc, #66ccff);
   background-origin: border-box;
   background-clip: padding-box, border-box;
   transition: all 0.4s ease;
+  cursor: pointer;
 }
 
 .btn-gradient-border:hover {
@@ -88,20 +91,27 @@ video {
 
 .btn-pink {
   flex: 1;
-  padding: 0.9rem 1.2rem;
+  padding: 0.8rem 1.2rem;
   background: linear-gradient(90deg, #ff99cc, #66ccff);
   border: none;
   border-radius: 30px;
-  color: white;
-  font-weight: 500;
+  color: #222;
+  font-weight: 600;
+  font-size: 0.95rem;
   cursor: pointer;
   text-align: center;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
   min-width: 120px;
 }
 
 .btn-pink:hover {
   background: linear-gradient(90deg, #cc0066, #004466);
+  color: #fff;
+}
+
+.journal-item .btn-pink {
+  display: inline-block;
+  text-transform: none;
 }
 
 .dashboard-content {
@@ -141,12 +151,15 @@ video {
 .icon-wrapper.green {
   background: linear-gradient(135deg, #8ddad5, #56c5b6);
 }
+
 .icon-wrapper.pink {
   background: linear-gradient(135deg, #fbb1bd, #f78da7);
 }
+
 .icon-wrapper.lilac {
   background: linear-gradient(135deg, #d9b3ff, #c084fc);
 }
+
 .icon-wrapper.teal {
   background: linear-gradient(135deg, #a8edea, #fed6e3);
 }
@@ -178,16 +191,17 @@ video {
 
 .journal-header {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
+  flex-wrap: wrap;
   margin-bottom: 2rem;
 }
 
 .journal-title {
   font-size: 2.2rem;
   font-weight: 700;
-  background: linear-gradient(90deg,  #ff99cc, #66ccff);
+  background: linear-gradient(90deg, #ff99cc, #66ccff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-right: 1rem;
@@ -195,45 +209,41 @@ video {
 
 .journal-search {
   flex: 1;
-  max-width: 400px;
+  max-width: 700px;
   border: 2px solid transparent;
   border-radius: 30px;
   padding: 10px 18px;
   color: #333;
-  background-image: linear-gradient(white, white),
-    linear-gradient(90deg, #ff99cc, #66ccff);
+  background-image: linear-gradient(white, white), linear-gradient(90deg, #ff99cc, #66ccff);
   background-origin: border-box;
   background-clip: padding-box, border-box;
   transition: all 0.4s ease;
 }
 
-.btn-gradient-border {
-  padding: 10px 18px;
-  border-radius: 30px;
-  font-weight: 500;
-  border: 2px solid transparent;
-  background-image: linear-gradient(white, white),
-    linear-gradient(135deg, #a8edea, #fed6e3);
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
-  transition: all 0.3s ease;
-  cursor: pointer;
+.journal-search:focus {
+  outline: none;
+  border-color: #ff99cc;
+  box-shadow: 0 0 0 2px rgba(255, 153, 204, 0.2);
 }
 
-.btn-gradient-border:hover {
-  background-image: linear-gradient(135deg, #fed6e3, #a8edea);
-  color: #333;
-}
-
-@media (min-width: 768px) {
+@media (max-width: 768px) {
   .journal-header {
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .journal-title {
-    margin-bottom: 0;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .journal-search {
+    max-width: 100%;
+  }
+
+  .btn-gradient-border {
+    width: 100%;
+    text-align: center;
   }
 }
 
@@ -259,6 +269,18 @@ video {
   min-height: 360px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.journal-item h2 {
+  text-align: center;
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: #222;
+  margin-bottom: 0.75rem;
+}
+
+.journal-item p {
+  text-align: left;
 }
 
 .journal-item:hover {
@@ -333,4 +355,86 @@ textarea:focus {
 
 ::-webkit-scrollbar-track {
   background: #f0f0f0;
+}
+
+.btn-bell {
+  position: relative;
+  font-size: 1.6rem;
+  background: linear-gradient(135deg, #ff99cc, #66ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  border: none;
+  cursor: pointer;
+  margin-right: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  transform: translateY(3px);
+}
+
+.btn-bell:hover {
+  opacity: 0.8;
+}
+
+.notif-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: linear-gradient(135deg, #ff99cc, #66ccff);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.language-selector {
+  position: relative;
+  display: inline-block;
+}
+
+.language-selector .btn-bell {
+  background: linear-gradient(135deg, #ff99cc, #66ccff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.language-dropdown {
+  display: none;
+  position: absolute;
+  top: 130%;
+  right: 0;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  min-width: 140px;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.language-selector:hover .language-dropdown {
+  display: block;
+}
+
+.language-dropdown button {
+  width: 100%;
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #333;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.language-dropdown button:hover {
+  background: linear-gradient(90deg, #ff99cc, #66ccff);
+  color: white;
 }

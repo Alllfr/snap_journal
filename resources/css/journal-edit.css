@@ -76,13 +76,80 @@
   flex-wrap: wrap;
 }
 
+.media-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 20px;
+  margin: 14px 0 18px 0;
+  flex-wrap: wrap;
+}
+
+.video-box {
+  width: 180px;
+  height: 140px;
+  border: 3px dashed #8bc34a; 
+  border-radius: 10px;
+  background: #f9fff3; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  box-sizing: border-box;
+  object-fit: cover;
+}
+
+.illustrator-box {
+  width: 180px;
+  height: 140px;
+  border: 3px dashed #ffeb3b; 
+  border-radius: 10px;
+  background: #fffbe6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+.expression-box {
+  flex: 1;
+  min-width: 180px;
+  border: 2px dashed rgba(139, 195, 74, 0.45);
+  border-radius: 10px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.72);
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  font-size: 14px;
+}
+
+.emotion-box {
+  flex: 1;
+  min-width: 180px;
+  border: 2px dashed rgba(255,153,153,0.45);
+  border-radius: 10px;
+  padding: 12px;
+  background: rgba(255,255,255,0.72);
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  font-size: 14px;
+}
+
+.expression-box,
+.emotion-box {
+  margin-top:45px;
+  text-align: left;
+}
+
 .tag-chip {
   background: linear-gradient(135deg,#fbe7f3,#e6f7fa);
-  padding: 6px 10px;
+  padding: 10px 10px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 11px;     
   color: #333;
-  border: 1px solid rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.05);
+  line-height: 1;
 }
 
 .illustrator-row {
@@ -91,19 +158,6 @@
   justify-content: flex-start;
   gap: 20px;
   margin: 14px 0 18px 0;
-}
-
-.illustrator-box {
-  width: 180px;
-  height: 140px;
-  border: 3px dashed #ffeb3b;
-  border-radius: 10px;
-  background: #fffbe6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px;
-  box-sizing: border-box;
 }
 
 .illustrator-box img {
@@ -329,4 +383,30 @@
   .split-active .right-pane { width: 100%; opacity: 1; }
   .illustrator-row { flex-direction: row; gap: 12px; justify-content: center; }
   .chat-body { max-height: 40vh; }
+}
+
+.video-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20px;
+  margin: 14px 0 18px 0;
+}
+
+
+.video-box video {
+  width: 160px;
+  height: 128px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.video-placeholder {
+  width: 160px;
+  height: 128px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+  font-size: 14px;
 }

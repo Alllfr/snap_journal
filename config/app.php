@@ -130,5 +130,8 @@ return [
     'key' => env('API_KEY'),
 ],
 
+'fastapi_enabled' => env('FASTAPI_ENABLED', true),
+
+
 
 ];

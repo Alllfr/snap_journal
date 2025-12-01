@@ -6,17 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void
-    {
-        Schema::table('journals', function (Blueprint $table) {
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-        });
-    }
+{
+    Schema::table('journals', function (Blueprint $table) {
+        if (!Schema::hasColumn('journals', 'user_id')) {
+            $table->uuid('user_id')->after('id');
+        }
 
-    public function down(): void
-    {
-        Schema::table('journals', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropColumn('user_id');
-        });
+        $table->foreign('user_id')
+              ->references('id')
+              ->on('users')
+              ->onDelete('cascade');
+    });
     }
 };

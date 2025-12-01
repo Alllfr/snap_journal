@@ -10,11 +10,13 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "google/cloud-storage": "^1.48",
         "inertiajs/inertia-laravel": "^2.0",
         "kreait/laravel-firebase": "^6.1",
         "laravel-notification-channels/fcm": "*",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
+        "league/flysystem-google-cloud-storage": "^3.30",
         "php-ffmpeg/php-ffmpeg": "^1.3",
         "tightenco/ziggy": "^2.4"
     },
@@ -33,7 +35,12 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+         "files": [
+        "app/Helpers/gcs.php",
+        "app/Helpers/TextFormatter.php"
+    ]
+        
     },
     "autoload-dev": {
         "psr-4": {
@@ -86,4 +93,6 @@
     },
     "minimum-stability": "stable",
     "prefer-stable": true
+
+    
 }

@@ -28,6 +28,13 @@ return [
     |
     */
 
+    'fastapi' => [
+    'url' => env('FASTAPI_URL'),
+    'key' => env('FASTAPI_KEY'),
+    'predict_url' => env('FASTAPI_PREDICT_URL'),
+],
+
+
     'disks' => [
 
         'local' => [
@@ -37,6 +44,20 @@ return [
             'throw' => false,
             'report' => false,
         ],
+            'gcs' => [
+            'driver' => 'gcs',
+            'project_id' => env('GOOGLE_CLOUD_PROJECT_ID', 'bamboo-host-471003-r9'),
+            'key_file' => env('GOOGLE_CLOUD_KEY_FILE', null),
+            'bucket' => env('GOOGLE_CLOUD_STORAGE_BUCKET', 'journal-ai-btj'),
+            'path_prefix' => env('GOOGLE_CLOUD_STORAGE_PATH_PREFIX', ''),
+            'predefinedAcl' => null,
+            'visibility' => 'public',
+            'metadata' => [
+                'cacheControl' => 'public,max-age=86400',
+            ],
+            'throw' => true,
+        ],
+
 
         'public' => [
             'driver' => 'local',

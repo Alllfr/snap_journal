@@ -1,7 +1,7 @@
 import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle, Eye, EyeOff } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
-import InputError from '@/components/input-error';
+import InputError from '@/Components/input-error';
 
 interface LoginProps {
     status?: string;

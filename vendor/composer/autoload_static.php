@@ -166,6 +166,7 @@ class ComposerStaticInit6d580901de64f9d577d8c139cea61306
             'Laravel\\Sail\\' => 13,
             'Laravel\\Prompts\\' => 16,
             'Laravel\\Pail\\' => 13,
+            'Laravel\\Breeze\\' => 15,
         ),
         'K' => 
         array (
@@ -593,6 +594,10 @@ class ComposerStaticInit6d580901de64f9d577d8c139cea61306
         array (
             0 => __DIR__ . '/..' . '/laravel/pail/src',
         ),
+        'Laravel\\Breeze\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laravel/breeze/src',
+        ),
         'Kreait\\Laravel\\Firebase\\' => 
         array (
             0 => __DIR__ . '/..' . '/kreait/laravel-firebase/src',
@@ -879,6 +884,7 @@ class ComposerStaticInit6d580901de64f9d577d8c139cea61306
         'App\\Http\\Controllers\\FCMTokenController' => __DIR__ . '/../..' . '/app/Http/Controllers/FCMTokenController.php',
         'App\\Http\\Controllers\\GcsUploadController' => __DIR__ . '/../..' . '/app/Http/Controllers/GcsUploadController.php',
         'App\\Http\\Controllers\\JournalController' => __DIR__ . '/../..' . '/app/Http/Controllers/JournalController.php',
+        'App\\Http\\Controllers\\MoodController' => __DIR__ . '/../..' . '/app/Http/Controllers/MoodController.php',
         'App\\Http\\Controllers\\NotificationController' => __DIR__ . '/../..' . '/app/Http/Controllers/NotificationController.php',
         'App\\Http\\Controllers\\Settings\\PasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Settings/PasswordController.php',
         'App\\Http\\Controllers\\Settings\\ProfileController' => __DIR__ . '/../..' . '/app/Http/Controllers/Settings/ProfileController.php',
@@ -4923,6 +4929,12 @@ class ComposerStaticInit6d580901de64f9d577d8c139cea61306
         'Kreait\\Laravel\\Firebase\\FirebaseProject' => __DIR__ . '/..' . '/kreait/laravel-firebase/src/FirebaseProject.php',
         'Kreait\\Laravel\\Firebase\\FirebaseProjectManager' => __DIR__ . '/..' . '/kreait/laravel-firebase/src/FirebaseProjectManager.php',
         'Kreait\\Laravel\\Firebase\\ServiceProvider' => __DIR__ . '/..' . '/kreait/laravel-firebase/src/ServiceProvider.php',
+        'Laravel\\Breeze\\BreezeServiceProvider' => __DIR__ . '/..' . '/laravel/breeze/src/BreezeServiceProvider.php',
+        'Laravel\\Breeze\\Console\\InstallCommand' => __DIR__ . '/..' . '/laravel/breeze/src/Console/InstallCommand.php',
+        'Laravel\\Breeze\\Console\\InstallsApiStack' => __DIR__ . '/..' . '/laravel/breeze/src/Console/InstallsApiStack.php',
+        'Laravel\\Breeze\\Console\\InstallsBladeStack' => __DIR__ . '/..' . '/laravel/breeze/src/Console/InstallsBladeStack.php',
+        'Laravel\\Breeze\\Console\\InstallsInertiaStacks' => __DIR__ . '/..' . '/laravel/breeze/src/Console/InstallsInertiaStacks.php',
+        'Laravel\\Breeze\\Console\\InstallsLivewireStack' => __DIR__ . '/..' . '/laravel/breeze/src/Console/InstallsLivewireStack.php',
         'Laravel\\Pail\\Console\\Commands\\PailCommand' => __DIR__ . '/..' . '/laravel/pail/src/Console/Commands/PailCommand.php',
         'Laravel\\Pail\\Contracts\\Printer' => __DIR__ . '/..' . '/laravel/pail/src/Contracts/Printer.php',
         'Laravel\\Pail\\File' => __DIR__ . '/..' . '/laravel/pail/src/File.php',

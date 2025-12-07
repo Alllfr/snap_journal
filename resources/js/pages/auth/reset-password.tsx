@@ -7,7 +7,7 @@ import {
   CheckCircle,
   XCircle,
 } from "lucide-react";
-import InputError from "@/components/input-error";
+import InputError from "@/Components/input-error";
 
 interface ResetPasswordProps {
   token: string;

@@ -231,11 +231,9 @@ export default function Index() {
         {translations["my_journal"] || "My Journal"}
       </button>
 
-      {/* ⬇️ Tambahkan ini */}
       <Link href="/mood-calendar" className="btn-gradient-border">
         Mood Calendar
       </Link>
-      {/* ⬆️ Tambahkan ini */}
 
       <Link href="/logout" method="post" as="button" className="btn-gradient-border">
         {translations["logout"] || "Logout"}

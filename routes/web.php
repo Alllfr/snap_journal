@@ -42,9 +42,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
   Route::post('/journals/{journal}/chat-ask', [JournalController::class, 'chatAsk'])
     ->name('journals.chatAsk');
 
-  Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     
- Route::get('/mood-calendar', function (Request $request) {
+Route::get('/mood-calendar', function (Request $request) {
     $month = $request->month ?? now()->format("Y-m");
     $service = app(\App\Services\Journal\JournalCrudService::class);
 
@@ -57,23 +57,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 });
 
-
     Route::post('/save-fcm-token', [JournalController::class, 'saveFcmToken'])->name('save-fcm-token');
     Route::post('/send-fcm', [NotificationController::class, 'sendToToken']);
     Route::post('/send-fcm-many', [NotificationController::class, 'sendToMany']);
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
 
-Route::middleware(['auth'])->group(function () {
+    Route::middleware(['auth'])->group(function () {
     Route::get('/notifications', [UserNotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/mark-as-read', [UserNotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
     Route::delete('/notifications/{id}', [UserNotificationController::class, 'destroy'])->name('notifications.destroy');
 });
 
-Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
-Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
-Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
-Route::post('reset-password', [NewPasswordController::class, 'store'])->name('password.store');
+    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
+    Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
+    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
+    Route::post('reset-password', [NewPasswordController::class, 'store'])->name('password.store');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

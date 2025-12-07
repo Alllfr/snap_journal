@@ -1,7 +1,7 @@
 import { Head, useForm } from "@inertiajs/react";
 import { LoaderCircle, Eye, EyeOff, CheckCircle, XCircle } from "lucide-react";
 import React, { FormEventHandler, useState } from "react";
-import InputError from "@/components/input-error";
+import InputError from "@/Components/input-error";
 
 type RegisterForm = {
     name: string;

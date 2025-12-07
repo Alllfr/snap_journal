@@ -19,16 +19,14 @@ class CheckInactiveUsers extends Command
     public function handle()
     {
         $users = User::whereNotNull('fcm_token')
-         ->where(function($q) {
-    $q->whereNull('last_entry')  // user belum pernah menulis
-      ->orWhere('last_entry', '<=', now()->subMinutes(5));
+          ->where(function($q) {
+        $q->whereNull('last_entry')  
+        ->orWhere('last_entry', '<=', now()->subHours(48));
 })
 ->where(function ($query) {
     $query->whereNull('last_reminder_at')
           ->orWhereColumn('last_reminder_at', '<', 'last_entry');
 })
-
-
             ->get();
 
         if ($users->isEmpty()) {

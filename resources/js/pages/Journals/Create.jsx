@@ -176,7 +176,6 @@ export default function Create() {
             />
             {errors.title && <p className="error-text">{errors.title}</p>}
           </div>
-
           <div>
             <label>Note</label>
             <CKEditor

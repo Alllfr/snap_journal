@@ -89,5 +89,3 @@ php artisan serve
 npm install
 npm run dev
 
-💡 Note
-This application is still under development.
